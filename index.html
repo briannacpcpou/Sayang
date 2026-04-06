@@ -14,9 +14,14 @@ body {
   margin: 0;
   text-align: center;
   overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
 }
 
-.screen1 { margin-top: 120px; }
+.screen1 { margin-top: 0; }
 
 .title-box {
   display: inline-block;
@@ -52,10 +57,10 @@ body {
   position: relative;
   width: 280px;
   height: 180px;
-  margin: 80px auto 20px auto;
   background-color: #d9534f;
   border-radius: 6px;
   box-shadow: 0 0 30px #ff6f91;
+  margin-bottom: 15px;
 }
 
 .front { position: absolute; }
@@ -74,7 +79,7 @@ body {
   border-top: 90px solid transparent;
 }
 
-/* HEART */
+/* HEART ON ENVELOPE */
 .heart-beat {
   position: absolute;
   top: 50%;
@@ -110,7 +115,7 @@ body {
   top: 50px;
   left: 10px;
   right: 10px;
-  bottom: 100px;
+  bottom: 120px;
   overflow-y: auto;
   padding: 30px 20px;
   font-size: 18px;
@@ -126,20 +131,56 @@ body {
   white-space: pre-line; /* maintains paragraph spacing */
 }
 
+/* INFO BOX ABOVE LETTER */
+.info-box {
+  display: none;
+  position: fixed;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 20px;
+  border: 2px solid #d9534f;
+  border-radius: 6px;
+  color: #d9534f;
+  background: #fff;
+  box-shadow: 0 0 15px #ff9aa2;
+  font-family: 'Gloria Hallelujah', cursive;
+}
+
+/* HEART BELOW LETTER */
+.letter-heart {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-45deg);
+  width: 20px;
+  height: 20px;
+  background: red;
+  animation: beat 1s infinite;
+}
+
+.letter-heart::before,
+.letter-heart::after {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: red;
+  border-radius: 50%;
+}
+
+.letter-heart::before { top: -10px; left: 0; }
+.letter-heart::after { left: 10px; top: 0; }
+
 .open .letter {
   transform: scaleY(1);
   opacity: 1;
 }
 
-.buttons {
-  display: none;
-  margin-bottom: 20px;
-}
-
+/* OPEN BUTTON */
 button#openBtn {
   padding: 10px 20px;
   font-size: 16px;
-  margin-top: 10px;
   border: 2px solid #d9534f;
   border-radius: 6px;
   background: transparent;
@@ -188,8 +229,11 @@ button#openBtn:hover {
   <button id="openBtn" onclick="openLetter()">OPEN</button>
 </div>
 
+<div class="info-box" id="infoBox">tap the heart below to close it :)</div>
+
 <div class="letter" id="letter">
   <p id="typedText"></p>
+  <div class="letter-heart"></div>
 </div>
 
 <script>
@@ -197,8 +241,7 @@ const fullText = `hey alessi,
 
 a chapter of your life has officially ended, and a new one is just about to begin. i wanted to write this letter not just to congratulate you, but to say the things i couldn’t before, especially after not keeping the promise i made back in december during our christmas party when i said i’d be there for your graduation. i’m really sorry for that.
 
-i want you to know how proud i am of you. you’ve grown so much, and the way you keep pushing yourself to improve amazes me every single time. it’s okay to make mistakes—everyone does. what matters is that you learn from them and keep going. don’t ever let anyone or anything make you doubt your worth. 
-you are important, and the way you care for others shows just how big your heart is. even the smallest kindness you share can change someone’s day—or even their life. that’s something rare, and it’s a part of you i hope you never lose.
+i want you to know how proud i am of you. you’ve grown so much, and the way you keep pushing yourself to improve amazes me every single time. it’s okay to make mistakes—everyone does. what matters is that you learn from them and keep going. don’t ever let anyone or anything make you doubt your worth. you are important, and the way you care for others shows just how big your heart is. even the smallest kindness you share can change someone’s day—or even their life. that’s something rare, and it’s a part of you i hope you never lose.
 
 i also hope, sayang, that you’re proud of yourself too. i hope you can look back and see how far you’ve come—the achievements you’ve worked for, the challenges you’ve faced, and the person you’ve become. you’ve improved in so many ways, even if it doesn’t always feel like it, and you deserve to celebrate yourself and all that you’ve accomplished. sometimes we’re so focused on what’s next that we forget to give ourselves credit, but you really should—you’re amazing for everything you’ve done and everything you are.
 
@@ -220,7 +263,7 @@ also, advance happy birthday, sayang! i hope this year brings you laughter, love
 
 i am, and will always be, in all ways, with my whole soul and being, so proud of you, sayang. :)
 
-— bambi's friend`; // truncated for brevity
+— bambi's friend`;
 
 let words = fullText.split(" ");
 let index = 0;
@@ -235,7 +278,7 @@ function typeEffect() {
   let interval = setInterval(() => {
     if(index < words.length){
       el.innerHTML += words[index] + " ";
-      el.scrollTop = el.scrollHeight; // auto scroll
+      el.scrollTop = el.scrollHeight;
       audio.currentTime = 0;
       audio.play();
       index++;
@@ -252,7 +295,8 @@ function start() {
 function openLetter() {
   document.body.classList.add('open');
   document.getElementById('openBtn').style.display = 'none';
-  setTimeout(typeEffect, 800); // delay to let paper roll down
+  document.getElementById('infoBox').style.display = 'block';
+  setTimeout(typeEffect, 800);
   createSparkles();
 }
 
@@ -260,6 +304,7 @@ function closeLetter() {
   document.body.classList.remove('open');
   document.getElementById('envelope').style.display = 'block';
   document.getElementById('openBtn').style.display = 'inline-block';
+  document.getElementById('infoBox').style.display = 'none';
 }
 
 document.getElementById('letter').addEventListener('click', closeLetter);
